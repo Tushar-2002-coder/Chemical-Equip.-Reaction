@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home | Chemical Converter</title>
+<style>
+/* ---------- BASIC STYLES ---------- */
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #004e92, #000428);
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.5s, color 0.5s;
+}
+body.dark {
+  background: linear-gradient(135deg, #1e1e2f, #111);
+  color: #eee;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 25px;
+  font-size: 1.3em;
+  font-weight: bold;
+}
+.switch {
+  position:relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+.switch input { display:none; }
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc;
+  border-radius: 34px;
+  transition: .4s;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px; width: 18px;
+  left: 3px; bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: .4s;
+}
+input:checked + .slider {
+  background-color: #2196F3;
+}
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 20px;
+  width: 80%;
+  max-width: 700px;
+  margin-top: 30px;
+}
+
+.card {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  text-align: center;
+  padding: 30px 15px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.4);
+  cursor: pointer;
+  transition: transform 0.3s ease, background 0.4s ease;
+}
+.card:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg,#0072ff,#6a5acd);
+}
+
+footer {
+  text-align: center;
+  padding: 10px;
+  font-size: 0.9em;
+  opacity: 0.8;
+}
+
+#profilePopup {
+  position: fixed;
+  top: 60px;
+  right: 20px;
+  background: rgba(25,225,265,0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.4);
+  display: none;
+  animation: fadeIn 0.5s;
+}
+#profilePopup p { margin: 8px 0; font-size: 14px; }
+#profilePopup button {
+  background: #ff6847;
+  border: none;
+  padding: 7px 15px;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  margin-top: 5px;
+}
+#logoutConfirm {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+#logoutConfirm .box {
+  background: rgba(255,255,255,0.15);
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+#logoutConfirm button {
+  margin: 10px;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+#yesLogout { background:#ff4747; color:white; }
+#noLogout { background:#2196F3; color:white; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span>🏠 Dashboard</span>
+  <div>
+    
+    <label class="switch">
+      <input type="checkbox" id="themeToggle">
+      <span class="slider"></span>
+    </label>
+</div>  
+</header>
+
+
+<button onclick="toggleProfile()" style="padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background: crimson;
+  position:relative;
+  top: 10px;
+  left: 90%;
+  width: 10%;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;">👤 Profile</button>
+
+ <main>
+  <h2>Welcome to Chemical Converter!</h2>
+  <p style="opacity:0.8;">Select a category to start your work</p>
+
+  <div class="grid">
+    <div class="card" onclick="openPage('HCl.html')">Calculator </div>
+    <div class="card" onclick="openPage('Equipdetail.html')">Equipment Details</div>
+    <div class="card" onclick="openPage('history.html')">History</div>
+    <div class="card" onclick="openPage('pdf.html')">Generate PDF</div>
+  </div>
+</main>
+
+<!-- PROFILE POPUP -->
+<div id="profilePopup">
+  <p><strong>Username:</strong> <span id="profileUser"></span></p>
+  <p><strong>Password:</strong> <span id="profilePass"></span></p>
+  <button onclick="confirmLogout()">Logout</button>
+</div>
+
+<!-- LOGOUT CONFIRMATION -->
+<div id="logoutConfirm">
+  <div class="box">
+    <p>⚠️ Are you sure you want to logout?</p>
+    <button id="yesLogout" onclick="logout()">Yes</button>
+    <button id="noLogout" onclick="cancelLogout()">No</button>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Chemical Converter | All Rights Reserved</p>
+</footer>
+
+<script>
+/* ---------- DARK MODE ---------- */
+const toggle = document.getElementById('themeToggle');
+if(localStorage.theme === 'dark'){
+  document.body.classList.add('dark');
+  toggle.checked = true;
+}
+toggle.addEventListener('change',()=>{
+  document.body.classList.toggle('dark', toggle.checked);
+  localStorage.theme = toggle.checked ? 'dark' : 'light';
+});
+
+/* ---------- PROFILE POPUP ---------- */
+function toggleProfile(){
+  const popup = document.getElementById('profilePopup');
+  if(popup.style.display==="block"){ popup.style.display="none"; return; }
+  const user = sessionStorage.loggedUser;
+  if(!user){ window.location="index.html"; return; }
+  document.getElementById('profileUser').textContent = user;
+  document.getElementById('profilePass').textContent = localStorage.getItem("user_"+user);
+  popup.style.display = "block";
+}
+  
+  // ---------- CLOSE PROFILE ON OUTSIDE CLICK ----------
+document.addEventListener('click', function(event) {
+  const popup = document.getElementById('profilePopup');
+  const button = document.querySelector('button[onclick="toggleProfile()"]');
+
+  // Agar popup visible hai aur click popup ke andar ya button par nahi hua
+  if (popup.style.display === 'block' && !popup.contains(event.target) && event.target !== button) {
+    popup.style.display = 'none';
+  }
+});
+
+/* ---------- PAGE ACCESS CHECK ---------- */
+window.onload = ()=>{
+  if(!sessionStorage.loggedUser){
+    window.location = "index.html";
+  }
+}
+
+/* ---------- LOGOUT ---------- */
+function confirmLogout(){
+  document.getElementById('logoutConfirm').style.display = "flex";
+}
+function cancelLogout(){
+  document.getElementById('logoutConfirm').style.display = "none";
+}
+function logout(){
+  sessionStorage.clear();
+  document.getElementById('logoutConfirm').style.display = "none";
+  alert("You have logged out successfully!");
+  window.location = "index.html";
+}
+
+/* ---------- CARD CLICK ---------- */
+function openPage(page){
+  window.location = page;
+}
+</script>
+
+</body>
+</html>
